@@ -8,7 +8,7 @@ public class BitmovinPlayerCollector : NSObject, Collector {
     public typealias TPlayer = Player
     
     private var sourceMetadataProvider = SourceMetadataProvider<Source>()
-    private var analytics: BitmovinAnalyticsInternal
+    public var analytics: BitmovinAnalyticsInternal
     
     @objc public init(config: BitmovinAnalyticsConfig) {
         self.analytics = BitmovinAnalyticsInternal.createAnalytics(config: config)

@@ -1,6 +1,6 @@
 import Foundation
 
-protocol EventDataDispatcher {
+public protocol EventDataDispatcher {
     func add(eventData: EventData)
     func addAd(adEventData: AdEventData)
     func enable()

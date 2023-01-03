@@ -5,7 +5,7 @@ public class StateMachine {
     public private(set) var state: PlayerState
     private var config: BitmovinAnalyticsConfig
     private(set) var impressionId: String
-    weak var delegate: StateMachineDelegate?
+    public weak var delegate: StateMachineDelegate?
     
     //tracked player times
     private(set) var stateEnterTimestamp: Int64 = 0

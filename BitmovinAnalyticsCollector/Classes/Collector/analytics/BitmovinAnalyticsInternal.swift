@@ -16,10 +16,10 @@ open class BitmovinAnalyticsInternal: NSObject {
     public private(set) var stateMachine: StateMachine
     public private(set) var adAnalytics: BitmovinAdAnalytics?
     internal var adapter: PlayerAdapter?
-    private var eventDataDispatcher: EventDataDispatcher
+    public private(set) var eventDataDispatcher: EventDataDispatcher
     private var userIdProvider: UserIdProvider
     internal var adAdapter: AdAdapter?
-    internal var eventDataFactory: EventDataFactory
+    public private(set) var eventDataFactory: EventDataFactory
     private var isPlayerAttached = false
     internal var didSendDrmLoadTime = false
 
@@ -139,7 +139,7 @@ open class BitmovinAnalyticsInternal: NSObject {
         return userIdProvider.getUserId()
     }
 
-    private func sendEventData(eventData: EventData?) {
+    public func sendEventData(eventData: EventData?) {
         guard let data = eventData else {
             return
         }
@@ -153,7 +153,7 @@ open class BitmovinAnalyticsInternal: NSObject {
         eventDataDispatcher.addAd(adEventData: data)
     }
 
-    internal func createEventData(duration: Int64) -> EventData {
+    public func createEventData(duration: Int64) -> EventData {
         
         var drmLoadTime: Int64? = nil
         if adapter?.drmDownloadTime != nil && !didSendDrmLoadTime {
@@ -189,10 +189,10 @@ open class BitmovinAnalyticsInternal: NSObject {
 
 extension BitmovinAnalyticsInternal: StateMachineDelegate {
 
-    func stateMachineDidExitSetup(_ stateMachine: StateMachine) {
+    public func stateMachineDidExitSetup(_ stateMachine: StateMachine) {
     }
 
-    func stateMachineEnterPlayAttemptFailed(stateMachine: StateMachine) {
+    public func stateMachineEnterPlayAttemptFailed(stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         if let errorData = stateMachine.getErrorData() {
             eventData.errorCode = errorData.code
@@ -204,13 +204,13 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
     
-    func stateMachine(_ stateMachine: StateMachine, didExitBufferingWithDuration duration: Int64) {
+    public func stateMachine(_ stateMachine: StateMachine, didExitBufferingWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.buffered = duration
         sendEventData(eventData: eventData)
     }
 
-    func stateMachineDidEnterError(_ stateMachine: StateMachine) {
+    public func stateMachineDidEnterError(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         
         if let errorData = stateMachine.getErrorData() {
@@ -223,30 +223,30 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    func stateMachine(_ stateMachine: StateMachine, didExitPlayingWithDuration duration: Int64) {
+    public func stateMachine(_ stateMachine: StateMachine, didExitPlayingWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.played = duration
         sendEventData(eventData: eventData)
     }
 
-    func stateMachine(_ stateMachine: StateMachine, didExitPauseWithDuration duration: Int64) {
+    public func stateMachine(_ stateMachine: StateMachine, didExitPauseWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.paused = duration
         sendEventData(eventData: eventData)
     }
 
-    func stateMachineDidQualityChange(_ stateMachine: StateMachine) {
+    public func stateMachineDidQualityChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
 
-    func stateMachine(_ stateMachine: StateMachine, didExitSeekingWithDuration duration: Int64, destinationPlayerState: PlayerState) {
+    public func stateMachine(_ stateMachine: StateMachine, didExitSeekingWithDuration duration: Int64, destinationPlayerState: PlayerState) {
         let eventData = createEventData(duration: duration)
         eventData.seeked = duration
         sendEventData(eventData: eventData)
     }
 
-    func stateMachine(_ stateMachine: StateMachine, didHeartbeatWithDuration duration: Int64) {
+    public func stateMachine(_ stateMachine: StateMachine, didHeartbeatWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         switch stateMachine.state {
         case .playing:
@@ -264,7 +264,7 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    func stateMachine(_ stateMachine: StateMachine, didStartupWithDuration duration: Int64) {
+    public func stateMachine(_ stateMachine: StateMachine, didStartupWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.videoStartupTime = duration
         // Hard coding 1 as the player startup time to workaround a Dashboard issue
@@ -275,26 +275,26 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    func stateMachineDidSubtitleChange(_ stateMachine: StateMachine) {
+    public func stateMachineDidSubtitleChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
 
-    func stateMachineDidAudioChange(_ stateMachine: StateMachine) {
+    public func stateMachineDidAudioChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
     
-    func stateMachineResetSourceState() {
+    public func stateMachineResetSourceState() {
         adapter?.resetSourceState()
         reset()
     }
     
-    func stateMachineStopsCollecting() {
+    public func stateMachineStopsCollecting() {
         detachPlayer()
     }
 
-    var currentTime: CMTime? {
+    public var currentTime: CMTime? {
         get {
             return self.adapter?.currentTime
         }
