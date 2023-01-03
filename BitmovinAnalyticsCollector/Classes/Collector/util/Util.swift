@@ -13,7 +13,7 @@ public class Util {
         return bundleIdentifier
     }
 
-    public static func version() -> String {
+    static func version() -> String {
         return BuildConfig.VERSION
     }
 

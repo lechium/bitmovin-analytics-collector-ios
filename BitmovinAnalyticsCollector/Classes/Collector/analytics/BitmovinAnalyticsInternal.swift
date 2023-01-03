@@ -19,7 +19,7 @@ open class BitmovinAnalyticsInternal: NSObject {
     public private(set) var eventDataDispatcher: EventDataDispatcher
     private var userIdProvider: UserIdProvider
     internal var adAdapter: AdAdapter?
-    public private(set) var eventDataFactory: EventDataFactory
+    internal var eventDataFactory: EventDataFactory
     private var isPlayerAttached = false
     internal var didSendDrmLoadTime = false
 
@@ -189,10 +189,10 @@ open class BitmovinAnalyticsInternal: NSObject {
 
 extension BitmovinAnalyticsInternal: StateMachineDelegate {
 
-    public func stateMachineDidExitSetup(_ stateMachine: StateMachine) {
+    func stateMachineDidExitSetup(_ stateMachine: StateMachine) {
     }
 
-    public func stateMachineEnterPlayAttemptFailed(stateMachine: StateMachine) {
+    func stateMachineEnterPlayAttemptFailed(stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         if let errorData = stateMachine.getErrorData() {
             eventData.errorCode = errorData.code
@@ -204,13 +204,13 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
     
-    public func stateMachine(_ stateMachine: StateMachine, didExitBufferingWithDuration duration: Int64) {
+    func stateMachine(_ stateMachine: StateMachine, didExitBufferingWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.buffered = duration
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachineDidEnterError(_ stateMachine: StateMachine) {
+    func stateMachineDidEnterError(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         
         if let errorData = stateMachine.getErrorData() {
@@ -223,30 +223,30 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachine(_ stateMachine: StateMachine, didExitPlayingWithDuration duration: Int64) {
+    func stateMachine(_ stateMachine: StateMachine, didExitPlayingWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.played = duration
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachine(_ stateMachine: StateMachine, didExitPauseWithDuration duration: Int64) {
+    func stateMachine(_ stateMachine: StateMachine, didExitPauseWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.paused = duration
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachineDidQualityChange(_ stateMachine: StateMachine) {
+    func stateMachineDidQualityChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachine(_ stateMachine: StateMachine, didExitSeekingWithDuration duration: Int64, destinationPlayerState: PlayerState) {
+    func stateMachine(_ stateMachine: StateMachine, didExitSeekingWithDuration duration: Int64, destinationPlayerState: PlayerState) {
         let eventData = createEventData(duration: duration)
         eventData.seeked = duration
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachine(_ stateMachine: StateMachine, didHeartbeatWithDuration duration: Int64) {
+    func stateMachine(_ stateMachine: StateMachine, didHeartbeatWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         switch stateMachine.state {
         case .playing:
@@ -264,7 +264,7 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachine(_ stateMachine: StateMachine, didStartupWithDuration duration: Int64) {
+    func stateMachine(_ stateMachine: StateMachine, didStartupWithDuration duration: Int64) {
         let eventData = createEventData(duration: duration)
         eventData.videoStartupTime = duration
         // Hard coding 1 as the player startup time to workaround a Dashboard issue
@@ -275,32 +275,32 @@ extension BitmovinAnalyticsInternal: StateMachineDelegate {
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachineDidSubtitleChange(_ stateMachine: StateMachine) {
+    func stateMachineDidSubtitleChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
 
-    public func stateMachineDidAudioChange(_ stateMachine: StateMachine) {
+    func stateMachineDidAudioChange(_ stateMachine: StateMachine) {
         let eventData = createEventData(duration: 0)
         sendEventData(eventData: eventData)
     }
     
-    public func stateMachineResetSourceState() {
+    func stateMachineResetSourceState() {
         adapter?.resetSourceState()
         reset()
     }
     
-    public func stateMachineStopsCollecting() {
+    func stateMachineStopsCollecting() {
         detachPlayer()
     }
 
-    public var currentTime: CMTime? {
+    var currentTime: CMTime? {
         get {
             return self.adapter?.currentTime
         }
     }
     
-    public var version: String {
+    var version: String {
         get {
             return Util.version()
         }

@@ -1,7 +1,7 @@
 import CoreMedia
 import Foundation
 
-public protocol StateMachineDelegate: AnyObject {
+protocol StateMachineDelegate: AnyObject {
     func stateMachineDidExitSetup(_ stateMachine: StateMachine)
     func stateMachineEnterPlayAttemptFailed(stateMachine: StateMachine)
     func stateMachine(_ stateMachine: StateMachine, didExitBufferingWithDuration duration: Int64)
